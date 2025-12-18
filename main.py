@@ -1,11 +1,27 @@
 import os
 import glob
 import time
-
-print('hi')
+import subprocess
+import sys
 
 path = "/Applications/DaVinci Resolve/DaVinci Resolve.app"
-os.system(f'open "{path}"')
+bin = "/Contents/MacOS/Resolve"
+
+print('hi')
+print("\n".join(sys.argv))
+
+video_dir = os.path.abspath('./input_data')
+video_paths = glob.glob(f'{video_dir}/*.mov')
+if not video_paths:
+    print("no videos found at the root of ./input_data")
+    exit()
+
+if len(sys.argv) > 1 and sys.argv[1] == '--headless':
+    print("Starting headless")
+    subprocess.Popen([path + bin, "-nogui"])
+else:
+    os.system(f'open {path}')
+
 print('waiting')
 time.sleep(7)
 
@@ -24,14 +40,12 @@ while project_name in names:
     project_name = basename + str(suffix)
 
 project = manager.create_project(project_name)
+print(f'Created project with name: {project_name}')
 
-video_dir = os.path.abspath('./videos')
-video_paths = glob.glob(f'{video_dir}/*.mp4')
-if video_paths is None:
-    print("no videos found in ./videos")
-    exit()
+
 items = project.mediapool.import_media(video_paths)
 project.mediapool.create_timeline_from_clips("timeline", items)
+print(f'Created timeline')
 
 out_dir = os.path.abspath('./out')
 
@@ -46,4 +60,8 @@ render_settings = {
 }
 project.set_render_settings(render_settings)
 project.add_renderjob()
+print(f'Starting render...')
+print(f'Saving to: ./out/{project_name}.mp4')
 project.render()
+
+# TODO: check for render status and report if done
