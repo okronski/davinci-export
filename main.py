@@ -37,7 +37,6 @@ def get_video_paths():
     return video_paths
 
 
-
 def start_davinci():
     if '--headless' in sys.argv:
         print("Starting headless mode")
@@ -73,19 +72,11 @@ def get_unique_project_name(base_name, existing_projects):
         project_name = f"{base_name}_{suffix}"
     return project_name
 
-
-def check_available_presets(project):
-    presets = project.render_presets
-    print("\nAvailable Render Presets")
-    for preset in presets:
-        print(f"  - {preset}")
-    print("=" * 35 + "\n")
-
-
 def process_video(video_path, manager, existing_projects, out_dir):
     start_time = time.time()
     
     # Get filename without extension
+    
     basename = os.path.basename(video_path)
     filename = os.path.splitext(basename)[0]
     
