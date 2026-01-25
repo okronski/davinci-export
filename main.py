@@ -173,7 +173,7 @@ def get_unique_project_name(base_name, existing_projects):
     while project_name in existing_projects:
         suffix += 1
         project_name = f"{base_name}_{suffix}"
-# Gibt einzigartigen Namen wieder zurück
+    # Gibt einzigartigen Namen wieder zurück
     return project_name
 
 
@@ -218,7 +218,7 @@ def process_video(video_path, manager, existing_projects, out_dir):
     
     print(f'\nProcessing: {filename}')
     
-    base_project_name = f"{filename}_IMF"
+    base_project_name = f"{filename}_Film"
     # Übergibt Variablen
     project_name = get_unique_project_name(base_project_name, existing_projects)
     
@@ -235,9 +235,11 @@ def process_video(video_path, manager, existing_projects, out_dir):
     output_folder = os.path.join(out_dir, project_name)
     os.makedirs(output_folder, exist_ok=True)
     
+
     # Läd IMF Preset und erstellt Render Settings
     project.load_render_preset("IMF - Netflix")
     render_settings = {
+        "Codec"
         "SelectAllFrames": True,
         "TargetDir": output_folder,
         "CustomName": filename,
@@ -245,7 +247,12 @@ def process_video(video_path, manager, existing_projects, out_dir):
         "ExportAudio": True,
     }
     
+    print(project.render_presets)
+
     project.set_render_settings(render_settings)
+
+    project.set_render_format_and_codec("imf","Kakadu")
+
     #Fügt Render Job hinzu
     job_id = project.add_renderjob()
     print(f'Starting render to: {output_folder}')
